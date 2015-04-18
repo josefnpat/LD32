@@ -27,13 +27,7 @@ function cutscenething.new(init)
   self._image=init.image
   self.getImage=cutscenething.getImage
   self.setImage=cutscenething.setImage
-  self._draw=init.draw or function(self)
-    if self:getImage() then
-      love.graphics.draw(self:getImage(),
-        self:getX(),self:getY(),self:getR(),
-        self:getSx(),self:getSy())
-    end
-  end
+  self._draw=init.draw or cutscenething._defaultDraw
   self._init=init.init or function(self) end
   self.getInit=cutscenething.getInit
   self.setInit=cutscenething.setInit
@@ -43,6 +37,14 @@ function cutscenething.new(init)
   self.getUpdate=cutscenething.getUpdate
   self.setUpdate=cutscenething.setUpdate
   return self
+end
+
+function cutscenething._defaultDraw(self)
+  if self:getImage() then
+    love.graphics.draw(self:getImage(),
+      self:getX(),self:getY(),self:getR(),
+      self:getSx(),self:getSy())
+  end
 end
 
 function cutscenething:getX()

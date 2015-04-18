@@ -17,6 +17,12 @@ function cutscene:update(dt)
   end)
 
   for _,v in pairs(self._things) do
+    if v.lifespan then
+      v.lifespan = v.lifespan - dt
+      if v.lifespan <= 0 then
+        self:removeThing(v)
+      end
+    end
     if self._curtime >= v.time then
       if not v.init then
         v.init = true
@@ -25,6 +31,7 @@ function cutscene:update(dt)
       v.data:getUpdate()(v.data,dt)
     end
   end
+  self:removeThing() -- cleanup
 end
 
 -- LuaClassGen pregenerated functions
