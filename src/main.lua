@@ -1,3 +1,8 @@
+local hump = {
+  camera = require "hump.camera",
+  gamestate = require "hump.gamestate",
+  timer = require "hump.timer",
+}
 bubbleclass = require "bubble.bubbleclass"
 
 fonts = {
@@ -40,8 +45,11 @@ cut:addThing({time=1,data=bg})
 
 dino = cutscenethingclass.new({
   image = love.graphics.newImage("cutscene/stand.png"),
-  x = 300,
+  x = 1300,
   y = 100,
+  init = function(self)
+    hump.timer.tween(1, self, {_x = 300} , 'out-back')
+  end,
   draw = function(self)
     love.graphics.draw(self:getImage(),self:getX(),self:getY())
     if self._text then
@@ -87,4 +95,5 @@ end
 
 function love.update(dt)
   cut:update(dt)
+  hump.timer.update(dt)
 end
