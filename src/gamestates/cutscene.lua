@@ -14,10 +14,7 @@ function cutscene:update(dt)
   if self.data.done then
     hump.gamestate.switch(gamestates.game)
   end
-end
-
-function cutscene:keypressed(key)
-  if bindings.select(key) then
+  if bindings.getTrigger(bindings.select) then
     for i,v in pairs(self.data.audio) do
       v:stop()
     end

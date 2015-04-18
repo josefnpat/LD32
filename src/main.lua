@@ -6,6 +6,10 @@ hump = {
 bubbleclass = require "bubble.bubbleclass"
 subtitleclass = require "subtitle.subtitleclass"
 
+splashclass = require "splashclass"
+
+bump = require "bump"
+
 fonts = {
   speechbubble = love.graphics.newFont("assets/Schoolbell.ttf",32)
 }
@@ -33,6 +37,7 @@ cutsceneclass = require "cutscene.cutsceneclass"
 cutscenethingclass = require "cutscene.cutscenethingclass"
 
 gamestates = {
+  splash = require "gamestates.splash",
   cutscene = require "gamestates.cutscene",
   game = require "gamestates.game",
 }
@@ -45,6 +50,6 @@ currentlevel = levels[1]
 
 function love.load()
   hump.gamestate.registerEvents()
-  hump.gamestate.switch(gamestates.cutscene)
+  hump.gamestate.switch(gamestates.splash)
 end
 
