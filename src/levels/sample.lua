@@ -3,6 +3,8 @@ local level = {}
 level.cutscene = cutsceneclass.new()
 local sub = subtitleclass.new()
 
+level.cutscene.audio = {}
+
 level.cutscene:addThing({
   time=0,
   lifespan=5,
@@ -12,6 +14,7 @@ level.cutscene:addThing({
       hump.timer.tween(5,self, {_sx=1.2,_sy=1.2,_x=-1000/2,_y=-580/2,_r=-0.2},'linear')
       local s1 = love.audio.newSource("assets/sample_1.ogg")
       s1:play()
+      table.insert(level.cutscene.audio,s1)
     end,
     draw = function(self)
       cutscenethingclass._defaultDraw(self)
@@ -40,6 +43,7 @@ dino = cutscenethingclass.new({
     hump.timer.tween(2, self, {_x = 300} , 'out-back')
     local s1 = love.audio.newSource("assets/sample_2.ogg")
     s1:play()
+    table.insert(level.cutscene.audio,s1)
   end,
   draw = function(self)
     love.graphics.draw(self:getImage(),self:getX(),self:getY())
@@ -63,6 +67,7 @@ level.cutscene:addThing({
       dino._text =  "Hello. I am the dino bro."
       local s1 = love.audio.newSource("assets/sample_3.ogg")
       s1:play()
+      table.insert(level.cutscene.audio,s1)
     end
   })
 })
@@ -75,6 +80,7 @@ level.cutscene:addThing({
       dino._text = nil
       local s1 = love.audio.newSource("assets/sample_4.ogg")
       s1:play()
+      table.insert(level.cutscene.audio,s1)
     end
   })
 })
@@ -87,6 +93,7 @@ level.cutscene:addThing({
       dino._text =  "Now fuck off."
       local s1 = love.audio.newSource("assets/sample_5.ogg")
       s1:play()
+      table.insert(level.cutscene.audio,s1)
     end,
     update = function(self,dt)
       dino:setX( dino:getX() + math.random(-10,10) )
@@ -99,7 +106,7 @@ level.cutscene:addThing({
   time=2,
   data=cutscenethingclass.new({
     init = function(self)
-      love.event.quit()
+      level.cutscene.done = true
     end,
   }),
 })

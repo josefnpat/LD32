@@ -10,6 +10,8 @@ fonts = {
   speechbubble = love.graphics.newFont("assets/Schoolbell.ttf",32)
 }
 
+bindings = require "bindings"
+
 love.graphics.setFont(fonts.speechbubble)
 
 dir = "bubble/good/"
@@ -31,7 +33,8 @@ cutsceneclass = require "cutscene.cutsceneclass"
 cutscenethingclass = require "cutscene.cutscenethingclass"
 
 gamestates = {
-  cutscene = require "gamestates.cutscene"
+  cutscene = require "gamestates.cutscene",
+  game = require "gamestates.game",
 }
 
 levels = {
