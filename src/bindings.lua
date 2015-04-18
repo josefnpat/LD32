@@ -17,8 +17,24 @@ function bindings.getTrigger(bind)
   end
 end
 
-bindings.select = function(key)
+bindings.select = function()
   return love.keyboard.isDown(" ","return")
+end
+
+bindings.up = function()
+  return love.keyboard.isDown("up","w")
+end
+
+bindings.down = function()
+  return love.keyboard.isDown("down","s")
+end
+
+bindings.left = function()
+  return love.keyboard.isDown("left","a")
+end
+
+bindings.right = function()
+  return love.keyboard.isDown("right","d")
 end
 
 return bindings
