@@ -1,0 +1,36 @@
+Theme: An Unconventional Weapon
+
+* Cutscenes
+
+  entity - x,y,sx,sy,r,alpha,image
+
+* Dino has different silly weapons?
+* Local Multiplayer?
+* Platformer or TMNT3 Staged?
+* Parralax? [NOPE]
+
+Current Assets:
+
+* Background (3 layers)
+
+* Entities
+  * Bread
+    * Moldy
+    * King
+    * Queen
+    * Rye
+    * White
+  * Dino - Player
+
+* Animations
+  * Walking
+  * Death
+  * Jump
+  * Standing (dino only)
+  * Attack (dino only)
+
+GUI
+  * Hearts
+
+
+
