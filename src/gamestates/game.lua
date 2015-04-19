@@ -1,5 +1,7 @@
 local game = {}
 
+game.anim_fps = 12
+
 function game:init()
   self.bg = love.graphics.newImage("assets/bg.png")
   self.fg = love.graphics.newImage("assets/fg.png")
@@ -35,7 +37,7 @@ function game:init()
   end
 
   self.world = bump.newWorld(50)
-  self.world:add(self.player,100,400,240,20)
+  self.world:add(self.player,100,400,100,40)
 
   local w = { x = 20, y = 350, w = 1280 - 20*2, h = 650 - 350 }
 
@@ -43,10 +45,13 @@ end
 
 function game:getAttackArea()
   local x,y,w,h = self.world:getRect(self.player)
-  local ax = x + w/2*self.player.direction
+  local size = 1.25
+  local centerx = x + w/2
+  local aw = w*size
+  local ax = centerx - aw/2 + self.player.direction*aw/2
+
   local ay = y - h/2
   local ah = 2*h
-  local aw = w
   return ax,ay,aw,ah
 end
 
@@ -79,19 +84,21 @@ function game:draw()
     anim = self.player.animations.stand
   end
 
-  local forced_scale = 2
-  local frame = math.floor(self.player.dt*12)
+  local frame = math.floor(self.player.dt*game.anim_fps)
   if anim_loop then
     frame = (frame % #anim)+1
   else
     frame = math.min(#anim,frame+1)
   end
   local draw_info = anim[frame]
-  local scale = w/draw_info.data.real_width*forced_scale
+
+  local forced_scale = 2
+
+  local scale = w/draw_info.data.real_width*2*forced_scale
 
   if global_debug then
     love.graphics.rectangle("line",
-      x-draw_info.data.real_width/(2*forced_scale)*scale,
+      x-draw_info.data.real_width/(2*2)*scale,
       y-draw_info.data.real_height*scale+h,
       draw_info.data.real_width*scale,
       draw_info.data.real_height*scale)
@@ -104,13 +111,13 @@ function game:draw()
 
   if self.player.direction == -1 then
     love.graphics.draw(draw_info.image,draw_info.quad,
-      x+(draw_info.data.xoffset-draw_info.data.real_width/(2*forced_scale))*scale,
+      x-w/2+(draw_info.data.xoffset-draw_info.data.real_width/(2*2))*scale,
       y+h-jump_offset,
       0,scale,scale,
       0,draw_info.data.height)
   else
     love.graphics.draw(draw_info.image,draw_info.quad,
-      x+w-(draw_info.data.xoffset-draw_info.data.real_width/(2*forced_scale))*scale,
+      x+w*1.5-(draw_info.data.xoffset-draw_info.data.real_width/(2*2))*scale,
       y+h-jump_offset,
       0,-scale,scale,
       0,draw_info.data.height)
@@ -160,7 +167,7 @@ function game:update(dt)
 
     if bindings.getTrigger(bindings.attack) and not self.player.jumping then
       if not self.player.attacking then
-        self.player.attacking = #self.player.animations.attack/12
+        self.player.attacking = #self.player.animations.attack/game.anim_fps
         self.player.dt = 0
       end
     end
