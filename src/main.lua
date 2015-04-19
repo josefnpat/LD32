@@ -6,6 +6,8 @@ hump = {
 bubbleclass = require "bubble.bubbleclass"
 subtitleclass = require "subtitle.subtitleclass"
 
+require 'json'
+
 splashclass = require "splashclass"
 
 bump = require "bump"
@@ -15,6 +17,9 @@ fonts = {
 }
 
 bindings = require "bindings"
+
+ssloader = require "ssloader"
+ssloader.load("assets/")
 
 love.graphics.setFont(fonts.speechbubble)
 
