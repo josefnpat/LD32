@@ -37,4 +37,11 @@ bindings.right = function()
   return love.keyboard.isDown("right","d")
 end
 
+bindings.jump = function()
+  return love.keyboard.isDown(" ","e")
+end
+
+bindings.debug = function()
+  return love.keyboard.isDown("`")
+end
 return bindings

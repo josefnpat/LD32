@@ -14,6 +14,7 @@ function ssloader.load(dir)
       local json_raw = love.filesystem.read(json_file)
       local json_data = json.decode(json_raw)
       ssloader.data[d] = json_data
+      ssloader.success = true
     end
   end
 end
