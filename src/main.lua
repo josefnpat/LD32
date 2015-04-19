@@ -58,3 +58,8 @@ function love.load()
   hump.gamestate.switch(gamestates.splash)
 end
 
+function love.update(dt)
+  if bindings.getTrigger(bindings.debug) then
+    global_debug = not global_debug
+  end
+end

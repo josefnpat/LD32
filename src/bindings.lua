@@ -38,10 +38,15 @@ bindings.right = function()
 end
 
 bindings.jump = function()
-  return love.keyboard.isDown(" ","e")
+  return love.keyboard.isDown(" ","/")
+end
+
+bindings.attack = function()
+  return love.keyboard.isDown("lalt",".")
 end
 
 bindings.debug = function()
   return love.keyboard.isDown("`")
 end
+
 return bindings

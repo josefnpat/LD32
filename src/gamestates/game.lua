@@ -16,7 +16,7 @@ function game:init()
     {name="stand",count=10},
     {name="walk",count=8},
     {name="jump",count=9},
-    {name="attack",count=9},
+    {name="attack",count=6},
     {name="death",count=24},
   }) do
     self.player.animations[vanim.name] = {}
@@ -61,6 +61,9 @@ function game:draw()
   elseif self.player.jumping then
     anim = self.player.animations.jump
     anim_loop = false
+  elseif self.player.attacking then
+    anim = self.player.animations.attack
+    anim_loop = false
   elseif self.player.moving then
     anim = self.player.animations.walk
   else
@@ -77,11 +80,13 @@ function game:draw()
   local draw_info = anim[frame]
   local scale = w/draw_info.data.real_width*forced_scale
 
-  love.graphics.rectangle("line",
-    x-draw_info.data.real_width/(2*forced_scale)*scale,
-    y-draw_info.data.real_height*scale+h,
-    draw_info.data.real_width*scale,
-    draw_info.data.real_height*scale)
+  if global_debug then
+    love.graphics.rectangle("line",
+      x-draw_info.data.real_width/(2*forced_scale)*scale,
+      y-draw_info.data.real_height*scale+h,
+      draw_info.data.real_width*scale,
+      draw_info.data.real_height*scale)
+  end
 
   local jump_offset = 0
   if self.player.jumping and self.player.jumping < 0.6 then
@@ -104,10 +109,12 @@ function game:draw()
 
   love.graphics.draw(self.fg,-40,-40)
 
-  love.graphics.rectangle("line",x,y,w,h)
-  love.graphics.rectangle("fill",x,y,
-    w*self.player.health/self.player.max_health,
-    h)
+  if global_debug then
+    love.graphics.rectangle("line",x,y,w,h)
+    love.graphics.rectangle("fill",x,y,
+      w*self.player.health/self.player.max_health,
+      h)
+  end
 
 end
 
@@ -131,7 +138,6 @@ function game:update(dt)
   end
 
   if self.player.jumping then
-
     if self.player.jumping < 0.6 then
       v.x = self.player.direction*4
       v.y = 0
@@ -139,23 +145,33 @@ function game:update(dt)
       v.x = 0
       v.y = 0
     end
-
     self.player.jumping = self.player.jumping - dt
     if self.player.jumping <= 0 then
       self.player.jumping = nil
     end
-
-
   end
 
   if bindings.jump() then
-
     if not self.player.jumping then
       self.player.jumping = 1
       self.player.dt = 0
     end
-
   end
+
+  if self.player.attacking then
+    self.player.attacking = self.player.attacking - dt
+    if self.player.attacking <= 0 then
+      self.player.attacking = nil
+    end
+  end
+
+  if bindings.attack() then
+    if not self.player.attacking then
+      self.player.attacking = #self.player.animations.attack/12
+      self.player.dt = 0
+    end
+  end
+
   if bindings.debug() then
     local orig_health = self.player.health
     self.player.health = math.max(0,self.player.health - 1)
