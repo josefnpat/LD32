@@ -37,12 +37,12 @@ bindings.right = function()
   return love.keyboard.isDown("right","d")
 end
 
-bindings.jump = function()
-  return love.keyboard.isDown(" ","/")
+bindings.attack = function()
+  return love.keyboard.isDown("z",".")
 end
 
-bindings.attack = function()
-  return love.keyboard.isDown("lalt",".")
+bindings.jump = function()
+  return love.keyboard.isDown("x","/")
 end
 
 bindings.debug = function()

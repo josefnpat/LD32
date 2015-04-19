@@ -41,6 +41,15 @@ function game:init()
 
 end
 
+function game:getAttackArea()
+  local x,y,w,h = self.world:getRect(self.player)
+  local ax = x + w/2*self.player.direction
+  local ay = y - h/2
+  local ah = 2*h
+  local aw = w
+  return ax,ay,aw,ah
+end
+
 function game:draw()
   love.graphics.draw(self.bg,-40,-40)
 
@@ -114,6 +123,8 @@ function game:draw()
     love.graphics.rectangle("fill",x,y,
       w*self.player.health/self.player.max_health,
       h)
+    local ax,ay,aw,ah = game:getAttackArea()
+    love.graphics.rectangle("line",ax,ay,aw,ah)
   end
 
 end
@@ -124,6 +135,7 @@ function game:update(dt)
 
   local v = {x=0,y=0}
 
+  -- Control Parsing
   if bindings.right() then
     v.x = 1
   end
@@ -136,6 +148,29 @@ function game:update(dt)
   if bindings.down() then
     v.y = 1
   end
+
+  if self.player.health > 0 then
+
+    if bindings.getTrigger(bindings.jump) and not self.player.attacking then
+      if not self.player.jumping then
+        self.player.jumping = 1
+        self.player.dt = 0
+      end
+    end
+
+    if bindings.getTrigger(bindings.attack) and not self.player.jumping then
+      if not self.player.attacking then
+        self.player.attacking = #self.player.animations.attack/12
+        self.player.dt = 0
+      end
+    end
+
+  else
+    v.x = 0
+    v.y = 0
+  end
+
+  -- Action parsing
 
   if self.player.jumping then
     if self.player.jumping < 0.6 then
@@ -151,24 +186,12 @@ function game:update(dt)
     end
   end
 
-  if bindings.jump() then
-    if not self.player.jumping then
-      self.player.jumping = 1
-      self.player.dt = 0
-    end
-  end
-
   if self.player.attacking then
     self.player.attacking = self.player.attacking - dt
+    v.x = 0
+    v.y = 0
     if self.player.attacking <= 0 then
       self.player.attacking = nil
-    end
-  end
-
-  if bindings.attack() then
-    if not self.player.attacking then
-      self.player.attacking = #self.player.animations.attack/12
-      self.player.dt = 0
     end
   end
 
