@@ -61,21 +61,28 @@ function entity:draw()
 
   local forced_scale = 2
   local scale = w/draw_info.data.real_width*2*forced_scale
+
   local jump_offset = 0
   if self:getJumping() and self:getJumping() < 0.6 then
     jump_offset = math.sin( self:getJumping() / 0.6 * math.pi ) * 200
   end
 
+  local hit_offset = 0
+  if self:getHit() and self:getHit() < 1 and self:getHealth() > 0 then
+    hit_offset = math.sin( self:getHit() / 1 * math.pi ) * 500
+  end
+
+
   if self:getDirection() == -1 then
     love.graphics.draw(draw_info.image,draw_info.quad,
       x-w/2+(draw_info.data.xoffset-draw_info.data.real_width/(2*2))*scale,
-      y+h-jump_offset,
+      y+h-jump_offset-hit_offset,
       0,scale,scale,
       0,draw_info.data.height)
   else
     love.graphics.draw(draw_info.image,draw_info.quad,
       x+w*1.5-(draw_info.data.xoffset-draw_info.data.real_width/(2*2))*scale,
-      y+h-jump_offset,
+      y+h-jump_offset-hit_offset,
       0,-scale,scale,
       0,draw_info.data.height)
   end
@@ -106,6 +113,15 @@ function entity:update(dt)
   self:setDt( self:getDt() + dt)
   local v,jump,attack = self:getAi()(self)
 
+  if self:getHit() then
+    self:setHit( self:getHit() - dt)
+    if self:getHit() <= 0 then
+      self:setHit( nil )
+    end
+    v.x = self:getHitDirection()
+    v.y = 0
+  end
+
   if self:getHealth() > 0 then
 
     if jump and not self:getAttacking() then
@@ -123,10 +139,9 @@ function entity:update(dt)
         local items = self:getWorld():queryRect(x,y,w,h)
         for _,e in pairs(items) do
           if e ~= self then
-            e:damage(1)
+            e:damage(self,1)
           end
         end
---        e:setGotHit(1,self:getDirection())
       end
     end
 
@@ -156,8 +171,8 @@ function entity:update(dt)
     if self:getAttacking() <= 0 then
       self:setAttacking( nil )
     end
-    v.x = 0
-    v.y = 0
+    v.x = v.x/4
+    v.y = v.y/4
   end
 
   if v.x > 0 then
@@ -166,20 +181,41 @@ function entity:update(dt)
     self:setDirection( -1 )
   end
 
+  if self:getHitDirection() then
+    self:setDirection( -self:getHitDirection() )
+  end
+
   self:setWalking( v.x ~= 0 or v.y ~= 0 )
 
   local x,y,w,h = self:getWorld():getRect(self)
   local tx = math.max(0,math.min(love.graphics.getWidth() - w,x+v.x*200*dt))
   local ty = math.max(350,math.min(650,y+v.y*100*dt))
 
-  self:getWorld():move(self,tx,ty,function(item,other)
+  local actualX, actualY, cols, len = self:getWorld():move(self,tx,ty,function(item,other)
     if item:getJumping() or other:getJumping() or
+      item:getHit() or other:getHit() or
       item:getHealth() <= 0 or other:getHealth() <= 0 then
       return nil
     else
-      return "slide"
+      return "cross"
     end
   end)
+
+  for _,v in pairs(cols) do
+    local bx,by,bw,bh = v.other:getWorld():getRect(v.other)
+    local dy = by - y
+    local dx = bx - x
+    local angle = math.atan2(dy,dx) + math.pi
+    local tx = x + math.cos(angle)*dt*100
+    local ty = y + math.sin(angle)*dt*100
+
+    self:getWorld():move(self,tx,ty,function() end)
+
+  end
+
+
+
+
 
 end
 
@@ -195,11 +231,15 @@ function entity:getAttackArea()
   return ax,ay,aw,ah
 end
 
-function entity:damage()
-  local orig_health = self:getHealth()
-  self:setHealth( math.max(0,self:getHealth() - 1) )
-  if orig_health ~= self:getHealth() and self:getHealth() == 0 then
-    self:setDt( 0 )
+function entity:damage(other,dmg)
+  if self:getHealth() > 0 and not self:getHit() then
+    self:setHit(1)
+    self:setHitDirection(other:getDirection())
+    local orig_health = self:getHealth()
+    self:setHealth( math.max(0,self:getHealth() - dmg) )
+    if orig_health ~= self:getHealth() and self:getHealth() == 0 then
+      self:setDt( 0 )
+    end
   end
 end
 
@@ -242,6 +282,12 @@ function entity.new(init)
   self._walking=init.walking
   self.getWalking=entity.getWalking
   self.setWalking=entity.setWalking
+  self._hit=init.hit
+  self.getHit=entity.getHit
+  self.setHit=entity.setHit
+  self._hitDirection=init.hitDirection
+  self.getHitDirection=entity.getHitDirection
+  self.setHitDirection=entity.setHitDirection
   return self
 end
 
@@ -323,6 +369,22 @@ end
 
 function entity:setWalking(val)
   self._walking=val
+end
+
+function entity:getHit()
+  return self._hit
+end
+
+function entity:setHit(val)
+  self._hit=val
+end
+
+function entity:getHitDirection()
+  return self._hitDirection
+end
+
+function entity:setHitDirection(val)
+  self._hitDirection=val
 end
 
 return entity
