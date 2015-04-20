@@ -2,6 +2,8 @@ local entity = {}
 
 entity.sprite_fps = 12
 
+entity.shadow = love.graphics.newImage("assets/shadow.png")
+
 entity.animations = {}
 
 for _,vanim in pairs({
@@ -72,6 +74,8 @@ function entity:draw()
     hit_offset = math.sin( self:getHit() / 1 * math.pi ) * 500
   end
 
+  local shadow_scale = w/entity.shadow:getWidth()
+  love.graphics.draw(entity.shadow,x,y+h/2,0,shadow_scale,shadow_scale)
 
   if self:getDirection() == -1 then
     love.graphics.draw(draw_info.image,draw_info.quad,
@@ -111,7 +115,7 @@ end
 
 function entity:update(dt)
   self:setDt( self:getDt() + dt)
-  local v,jump,attack = self:getAi()(self)
+  local v,jump,attack = self:getAi()(self,dt)
 
   if self:getHit() then
     self:setHit( self:getHit() - dt)
@@ -188,8 +192,8 @@ function entity:update(dt)
   self:setWalking( v.x ~= 0 or v.y ~= 0 )
 
   local x,y,w,h = self:getWorld():getRect(self)
-  local tx = math.max(0,math.min(love.graphics.getWidth() - w,x+v.x*200*dt))
-  local ty = math.max(350,math.min(650,y+v.y*100*dt))
+  local tx = math.max(0,math.min(love.graphics.getWidth() - w,x+v.x*self:getSpeed()*dt))
+  local ty = math.max(350,math.min(650,y+v.y*self:getSpeed()/2*dt))
 
   local actualX, actualY, cols, len = self:getWorld():move(self,tx,ty,function(item,other)
     if item:getJumping() or other:getJumping() or
@@ -208,14 +212,10 @@ function entity:update(dt)
     local angle = math.atan2(dy,dx) + math.pi
     local tx = x + math.cos(angle)*dt*100
     local ty = y + math.sin(angle)*dt*100
-
-    self:getWorld():move(self,tx,ty,function() end)
-
+    local ctx = math.max(0,math.min(love.graphics.getWidth() - w,tx))
+    local cty = math.max(350,math.min(650,ty))
+    self:getWorld():move(self,ctx,cty,function() end)
   end
-
-
-
-
 
 end
 
@@ -232,7 +232,7 @@ function entity:getAttackArea()
 end
 
 function entity:damage(other,dmg)
-  if self:getHealth() > 0 and not self:getHit() then
+  if not self:getHit() then
     self:setHit(1)
     self:setHitDirection(other:getDirection())
     local orig_health = self:getHealth()
@@ -288,6 +288,9 @@ function entity.new(init)
   self._hitDirection=init.hitDirection
   self.getHitDirection=entity.getHitDirection
   self.setHitDirection=entity.setHitDirection
+  self._speed=init.speed
+  self.getSpeed=entity.getSpeed
+  self.setSpeed=entity.setSpeed
   return self
 end
 
@@ -385,6 +388,14 @@ end
 
 function entity:setHitDirection(val)
   self._hitDirection=val
+end
+
+function entity:getSpeed()
+  return self._speed
+end
+
+function entity:setSpeed(val)
+  self._speed=val
 end
 
 return entity

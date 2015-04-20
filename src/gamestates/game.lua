@@ -5,7 +5,6 @@ game.anim_fps = 12
 function game:init()
   self.bg = love.graphics.newImage("assets/bg.png")
   self.fg = love.graphics.newImage("assets/fg.png")
-
 end
 
 function game:enter()
@@ -20,10 +19,12 @@ function game:enter()
     health = 100,
     maxHealth = 100,
     ai = game.player_ai,
+    speed = 200,
   })
   table.insert(self.entities,p)
   self.world:add(p,100,400,100,40)
 
+  self.player = p
 
   for i = 1,10 do
     local e = entityclass.new({
@@ -33,9 +34,10 @@ function game:enter()
       health = 2,
       maxHealth = 2,
       ai = game.bread_ai,
+      speed = 100,
     })
     table.insert(self.entities,e)
-    self.world:add(e,math.random(600,800),math.random(400,600),100,40)
+    self.world:add(e,math.random(600,800),math.random(400,600),math.random(100,100),40)
   end
 
 end
@@ -107,8 +109,17 @@ function game.player_ai(self)
 
 end
 
-function game.bread_ai(self)
-  return {x=0,y=0},nil,nil
+function game.bread_ai(self,dt)
+  local x,y,w,h = self:getWorld():getRect(self)
+  local px,py,pw,ph = self:getWorld():getRect(gamestates.game.player)
+  local dy = py - y
+  local dx = px - x
+  local angle = math.atan2(dy,dx)
+  local v = {
+    x = math.cos(angle),
+    y = math.sin(angle)
+  }
+  return v,nil,nil
 end
 
 return game
