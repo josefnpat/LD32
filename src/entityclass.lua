@@ -217,6 +217,10 @@ function entity:update(dt)
     local ctx = math.max(-300,math.min(love.graphics.getWidth() - w+300,tx))
     local cty = math.max(350,math.min(650,ty))
     self:getWorld():move(self,ctx,cty,function() end)
+    if v.other == gamestates.game.player then
+      gamestates.game.player:damage(self,1)
+      self:damage(gamestates.game.player,1)
+    end
   end
 
 end

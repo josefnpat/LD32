@@ -6,9 +6,27 @@ function game:init()
   self.bg = love.graphics.newImage("assets/bg.png")
   self.fg = love.graphics.newImage("assets/fg.png")
   self.end_level_time = 4
+
+  if love.filesystem.isFile("assets/hearts.png") then
+    self.hearts = {}
+    self.hearts.img = love.graphics.newImage("assets/hearts.png")
+    local json_raw = love.filesystem.read("assets/hearts.json")
+    local json_data =json.decode(json_raw)
+    self.hearts.info = {}
+    for i = 1,14 do
+      local v = json_data.sprites['./'..i..'.png']
+      table.insert(self.hearts.info,{
+        quad = love.graphics.newQuad( v.x, v.y, v.width, v.height, json_data.width, json_data.height ),
+        data = v,
+      })
+    end
+  end
+
 end
 
 function game:enter()
+
+  self.beat = 0
 
   self.end_level = nil
 
@@ -20,8 +38,8 @@ function game:enter()
     world = self.world,
     direction = 1,
     eClass = "dino",
-    health = 100,
-    maxHealth = 100,
+    health = 5,
+    maxHealth = 5,
     ai = game.player_ai,
     speed = 200,
   })
@@ -74,6 +92,12 @@ function game:draw()
     e:draw()
   end
 
+  for i = 1,self.player:getHealth() do
+    local frame = math.floor(self.beat*4 % 3) + 1
+    love.graphics.draw(self.hearts.img,self.hearts.info[frame].quad,
+    80*(i-1)+16,16)
+  end
+
   if self.end_level then
     love.graphics.setColor(0,0,0,(1-self.end_level/self.end_level_time)*255)
     love.graphics.rectangle("fill",0,0,love.graphics.getWidth(),love.graphics.getHeight())
@@ -94,6 +118,8 @@ function game:draw()
 end
 
 function game:update(dt)
+
+  self.beat = self.beat + dt
 
   if self.end_level then
     self.end_level = math.max(0,self.end_level - dt)

@@ -8,6 +8,6 @@ cd -
 
 cd hearts
 find . -name "*.png" > list
-texpack --output ../../src/assets/heart --max-size 2048x2048 --pretty --trim list 
+texpack --output ../../src/assets/hearts --max-size 2048x2048 --pretty --trim list 
 rm list
 cd -
