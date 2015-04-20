@@ -50,6 +50,7 @@ gamestates = {
   levelselect = require "gamestates.levelselect",
   cutscene = require "gamestates.cutscene",
   game = require "gamestates.game",
+  failure = require "gamestates.failure",
 }
 
 function love.load()

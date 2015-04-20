@@ -25,7 +25,7 @@ sfxclass.data = {
 }
 
 function sfxclass:play(sfx_name)
-  print("Playing",sfx_name)
+  --print("Playing",sfx_name)
   if self.data[sfx_name] then
     local sound = self.data[sfx_name][math.random(1,#self.data[sfx_name])]
     if sound:isPlaying() then

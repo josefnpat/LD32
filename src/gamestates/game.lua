@@ -106,7 +106,13 @@ function game:draw()
   end
 
   local text
-  if bread_alive > 0 then
+  if self.player:getHealth() <= 0 then
+    text = "OH NO, BRO!"
+    if not self.end_level then
+      self.end_level = self.end_level_time
+      sfx:play("failure")
+    end
+  elseif bread_alive > 0 then
     text = "Bread Alive: "..bread_alive
   else
     if not self.end_level then
@@ -126,8 +132,12 @@ function game:update(dt)
   if self.end_level then
     self.end_level = math.max(0,self.end_level - dt)
     if self.end_level == 0 then
-      hump.gamestate.switch(gamestates.levelselect)
       self.end_level = nil
+      if self.player:getHealth() <= 0 then
+        hump.gamestate.switch(gamestates.failure)
+      else
+        hump.gamestate.switch(gamestates.levelselect)
+      end
     end
   end
 
