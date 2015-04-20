@@ -2,8 +2,7 @@ local levelselect = {}
 
 function levelselect:init()
   self.levels = {
-    sample = require "levels.sample",
-    main  = require "levels.main",
+    sample = require "levels.level1",
   }
 end
 

@@ -2,6 +2,15 @@ local entity = {}
 
 entity.sprite_fps = 12
 
+entity.hats = {}
+
+entity.hats.random = {
+  love.graphics.newImage("assets/hats/pickelhaupe.png"),
+}
+entity.hats.special = {
+  crown = love.graphics.newImage("assets/hats/crown.png"),
+}
+
 entity.shadow = love.graphics.newImage("assets/shadow.png")
 
 entity.animations = {}
@@ -92,6 +101,15 @@ function entity:draw()
         0,-scale,scale,
         0,draw_info.data.height)
     end
+
+    if self:getHat() then
+      local hx = x+w/2-32*self:getDirection()
+      local hy = y-draw_info.data.height*scale-hit_offset-jump_offset
+      local hsy = 64/self:getHat():getWidth()
+      local hsx = hsy*self:getDirection()
+      love.graphics.draw(self:getHat(),hx,hy,0,hsx,hsy)
+    end
+
   end
 
   if global_debug then
@@ -256,7 +274,7 @@ function entity:getAttackArea()
 end
 
 function entity:damage(other,dmg)
-  if not self:getHit() and not self:getInvuln() and not other:getInvuln() then
+  if not self:getHit() and not self:getInvuln() then
     if self:getHealth() > 0 then
       sfx:play(self:getEClass().."_hurt")
     end
@@ -327,6 +345,9 @@ function entity.new(init)
   self._invuln=init.invuln
   self.getInvuln=entity.getInvuln
   self.setInvuln=entity.setInvuln
+  self._hat=init.hat or (math.random(0,1) == 1 and entity.hats.random[#entity.hats.random] or nil)
+  self.getHat=entity.getHat
+  self.setHat=entity.setHat
   return self
 end
 
@@ -448,6 +469,14 @@ end
 
 function entity:setInvuln(val)
   self._invuln=val
+end
+
+function entity:getHat()
+  return self._hat
+end
+
+function entity:setHat(val)
+  self._hat=val
 end
 
 return entity

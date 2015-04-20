@@ -44,6 +44,7 @@ function game:enter()
     speed = 200,
     hitHeight = 200,
   })
+  p:setHat(nil)
   table.insert(self.entities,p)
   self.world:add(p,
     love.graphics.getWidth()/4-100/2,

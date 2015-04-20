@@ -12,7 +12,7 @@ level.game = function(self)
       speed = 100,
     })
     table.insert(self.entities,e)
-    self.world:add(e,love.graphics.getWidth()+math.random(0,100),math.random(400,600),math.random(10,100),40)
+    self.world:add(e,love.graphics.getWidth()+math.random(0,100),math.random(400,600),math.random(100,200),40)
   end
 end
 

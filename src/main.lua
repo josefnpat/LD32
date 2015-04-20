@@ -9,6 +9,11 @@ require 'json'
 
 splashclass = require "splashclass"
 
+ssloader = require "ssloader"
+ssloader.load("assets/")
+
+entityclass = require "entityclass"
+
 bump = require "bump"
 
 fonts = {
@@ -18,11 +23,6 @@ fonts = {
 sfx = require "sfxclass"
 
 bindings = require "bindings"
-
-ssloader = require "ssloader"
-ssloader.load("assets/")
-
-entityclass = require "entityclass"
 
 love.graphics.setFont(fonts.speechbubble)
 
