@@ -7,6 +7,7 @@ entity.shadow = love.graphics.newImage("assets/shadow.png")
 entity.animations = {}
 
 for _,vanim in pairs({
+  {class="bread",name="stand",count=8},
   {class="bread",name="walk",count=8},
   {class="bread",name="death",count=22},
   {class="dino",name="stand",count=10},
