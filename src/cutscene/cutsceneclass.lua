@@ -2,9 +2,11 @@ local cutscene = {}
 
 function cutscene:draw()
   for _,v in pairs(self._things) do
-    if self._curtime >= v.time then
-      love.graphics.setColor(v.data:getColor())
-      v.data:getDraw()(v.data)
+    if v.data then
+      if self._curtime >= v.time then
+        love.graphics.setColor(v.data:getColor())
+        v.data:getDraw()(v.data)
+      end
     end
   end
 end
@@ -26,9 +28,13 @@ function cutscene:update(dt)
     if self._curtime >= v.time then
       if not v.init then
         v.init = true
-        v.data:getInit()(v.data)
+        if v.data then
+          v.data:getInit()(v.data)
+        end
       end
-      v.data:getUpdate()(v.data,dt)
+      if v.data then
+        v.data:getUpdate()(v.data,dt)
+      end
     end
   end
   self:removeThing() -- cleanup

@@ -44,15 +44,10 @@ cutscenethingclass = require "cutscene.cutscenethingclass"
 
 gamestates = {
   splash = require "gamestates.splash",
+  levelselect = require "gamestates.levelselect",
   cutscene = require "gamestates.cutscene",
   game = require "gamestates.game",
 }
-
-levels = {
-  require "levels.sample"
-}
-
-currentlevel = levels[1]
 
 function love.load()
   hump.gamestate.registerEvents()

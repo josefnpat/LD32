@@ -70,7 +70,7 @@ function entity:draw()
   end
 
   local hit_offset = 0
-  if self:getHit() and self:getHit() < 1 and self:getHealth() > 0 then
+  if self:getHit() and self:getHit() < 1 then
     hit_offset = math.sin( self:getHit() / 1 * math.pi ) * 500
   end
 
@@ -122,7 +122,7 @@ function entity:update(dt)
     if self:getHit() <= 0 then
       self:setHit( nil )
     end
-    v.x = self:getHitDirection()
+    v.x = self:getHitDirection()*2
     v.y = 0
   end
 
@@ -192,6 +192,7 @@ function entity:update(dt)
   self:setWalking( v.x ~= 0 or v.y ~= 0 )
 
   local x,y,w,h = self:getWorld():getRect(self)
+  -- clamp player
   local tx = math.max(0,math.min(love.graphics.getWidth() - w,x+v.x*self:getSpeed()*dt))
   local ty = math.max(350,math.min(650,y+v.y*self:getSpeed()/2*dt))
 
@@ -212,7 +213,8 @@ function entity:update(dt)
     local angle = math.atan2(dy,dx) + math.pi
     local tx = x + math.cos(angle)*dt*100
     local ty = y + math.sin(angle)*dt*100
-    local ctx = math.max(0,math.min(love.graphics.getWidth() - w,tx))
+    -- clamp bread
+    local ctx = math.max(-300,math.min(love.graphics.getWidth() - w+300,tx))
     local cty = math.max(350,math.min(650,ty))
     self:getWorld():move(self,ctx,cty,function() end)
   end
