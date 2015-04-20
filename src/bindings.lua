@@ -38,7 +38,7 @@ bindings.right = function()
 end
 
 bindings.attack = function()
-  return love.keyboard.isDown("z",".")
+  return love.keyboard.isDown("z",".","y") -- QWERTZ
 end
 
 bindings.jump = function()
