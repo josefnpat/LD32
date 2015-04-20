@@ -72,24 +72,26 @@ function entity:draw()
 
   local hit_offset = 0
   if self:getHit() and self:getHit() < 1 then
-    hit_offset = math.sin( self:getHit() / 1 * math.pi ) * 500
+    hit_offset = math.sin( self:getHit() / 1 * math.pi ) * self:getHitHeight()
   end
 
   local shadow_scale = w/entity.shadow:getWidth()
   love.graphics.draw(entity.shadow,x,y+h/2,0,shadow_scale,shadow_scale)
 
-  if self:getDirection() == -1 then
-    love.graphics.draw(draw_info.image,draw_info.quad,
-      x-w/2+(draw_info.data.xoffset-draw_info.data.real_width/(2*2))*scale,
-      y+h-jump_offset-hit_offset,
-      0,scale,scale,
-      0,draw_info.data.height)
-  else
-    love.graphics.draw(draw_info.image,draw_info.quad,
-      x+w*1.5-(draw_info.data.xoffset-draw_info.data.real_width/(2*2))*scale,
-      y+h-jump_offset-hit_offset,
-      0,-scale,scale,
-      0,draw_info.data.height)
+  if self:getInvuln() == nil or self:getInvuln()*8%1 > 0.5 then
+    if self:getDirection() == -1 then
+      love.graphics.draw(draw_info.image,draw_info.quad,
+        x-w/2+(draw_info.data.xoffset-draw_info.data.real_width/(2*2))*scale,
+        y+h-jump_offset-hit_offset,
+        0,scale,scale,
+        0,draw_info.data.height)
+    else
+      love.graphics.draw(draw_info.image,draw_info.quad,
+        x+w*1.5-(draw_info.data.xoffset-draw_info.data.real_width/(2*2))*scale,
+        y+h-jump_offset-hit_offset,
+        0,-scale,scale,
+        0,draw_info.data.height)
+    end
   end
 
   if global_debug then
@@ -116,15 +118,28 @@ end
 
 function entity:update(dt)
   self:setDt( self:getDt() + dt)
+
+  if self:getInvuln() and self:getEClass() == "dino" then
+    self:setInvuln( self:getInvuln() - dt )
+    if self:getInvuln() <= 0 then
+      self:setInvuln( nil )
+    end
+  end
+
   local v,jump,attack = self:getAi()(self,dt)
+
+  if attack and not self:getAttacking() then
+    sfx:play("attack")
+  end
 
   if self:getHit() then
     self:setHit( self:getHit() - dt)
-    if self:getHit() <= 0 then
-      self:setHit( nil )
-    end
     v.x = self:getHitDirection()*2
     v.y = 0
+    if self:getHit() <= 0 then
+      self:setHit( nil )
+      self:setHitDirection( nil )
+    end
   end
 
   if self:getHealth() > 0 then
@@ -133,6 +148,7 @@ function entity:update(dt)
       if not self:getJumping() then
         self:setJumping(1)
         self:setDt(0)
+        sfx:play("jump")
       end
     end
 
@@ -168,6 +184,7 @@ function entity:update(dt)
     self:setJumping( self:getJumping() - dt )
     if self:getJumping() <= 0 then
       self:setJumping(nil)
+      sfx:play("land")
     end
   end
 
@@ -239,7 +256,13 @@ function entity:getAttackArea()
 end
 
 function entity:damage(other,dmg)
-  if not self:getHit() then
+  if not self:getHit() and not self:getInvuln() and not other:getInvuln() then
+    if self:getHealth() > 0 then
+      sfx:play(self:getEClass().."_hurt")
+    end
+    if self:getEClass() == "dino" then
+      self:setInvuln(2)
+    end
     self:setHit(1)
     self:setHitDirection(other:getDirection())
     local orig_health = self:getHealth()
@@ -298,6 +321,12 @@ function entity.new(init)
   self._speed=init.speed
   self.getSpeed=entity.getSpeed
   self.setSpeed=entity.setSpeed
+  self._hitHeight=init.hitHeight or 500
+  self.getHitHeight=entity.getHitHeight
+  self.setHitHeight=entity.setHitHeight
+  self._invuln=init.invuln
+  self.getInvuln=entity.getInvuln
+  self.setInvuln=entity.setInvuln
   return self
 end
 
@@ -403,6 +432,22 @@ end
 
 function entity:setSpeed(val)
   self._speed=val
+end
+
+function entity:getHitHeight()
+  return self._hitHeight
+end
+
+function entity:setHitHeight(val)
+  self._hitHeight=val
+end
+
+function entity:getInvuln()
+  return self._invuln
+end
+
+function entity:setInvuln(val)
+  self._invuln=val
 end
 
 return entity

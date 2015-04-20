@@ -39,7 +39,7 @@ end
 
 function splash:update(dt)
   if self._splashes[self._current] == nil then
-    hump.gamestate.switch(gamestates.levelselect)
+    hump.gamestate.switch(gamestates.menu)
   elseif self._splashes[self._current]:done() then
     self._current=self._current+1
   elseif bindings.getTrigger(bindings.select) then

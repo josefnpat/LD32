@@ -42,6 +42,7 @@ function game:enter()
     maxHealth = 5,
     ai = game.player_ai,
     speed = 200,
+    hitHeight = 200,
   })
   table.insert(self.entities,p)
   self.world:add(p,
@@ -110,6 +111,7 @@ function game:draw()
   else
     if not self.end_level then
       self.end_level = self.end_level_time
+      sfx:play("success")
     end
     text = "GOOD JOB BRO! TIME FOR THE NEXT LEVEL!"
   end

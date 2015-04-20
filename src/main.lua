@@ -15,6 +15,8 @@ fonts = {
   speechbubble = love.graphics.newFont("assets/Schoolbell.ttf",32)
 }
 
+sfx = require "sfxclass"
+
 bindings = require "bindings"
 
 ssloader = require "ssloader"
@@ -44,6 +46,7 @@ cutscenethingclass = require "cutscene.cutscenethingclass"
 
 gamestates = {
   splash = require "gamestates.splash",
+  menu = require "gamestates.menu",
   levelselect = require "gamestates.levelselect",
   cutscene = require "gamestates.cutscene",
   game = require "gamestates.game",
