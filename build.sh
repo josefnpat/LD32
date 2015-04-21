@@ -2,7 +2,7 @@
 
 SRC="src"
 NAME="dinobros"
-VERSION=0.9.1
+VERSION=0.9.2
 
 `sh ./gengit.sh $SRC`
 GIT=`sh ./git.sh $SRC`
@@ -51,41 +51,3 @@ cd tmp
 zip -ry ../builds/${NAME}_macosx_${INFO}.zip ${BIN_NAME}.app
 cd ..
 rm tmp/* -rf #tmp cleanup
-
-# LINUX
-mkdir tmp/${NAME}
-cp dev/build_data/${NAME}-run.sh tmp/${NAME}/
-cp ${LOVE} tmp/${NAME}/
-cp dev/build_data/icons/Game.png tmp/${NAME}/icon.png
-cd tmp
-tar czvf ../builds/${NAME}_linux_${INFO}.tgz ${NAME}
-cd ..
-rm tmp/* -rf #tmp cleanup
-
-# ARCH LINUX
-
-# set up aur
-mkdir tmp/${NAME}
-cp dev/build_data/aur/${NAME}/* tmp/${NAME}/ -Rv
-
-# make aur zip data
-mkdir tmp/${NAME}_zip
-cp $LOVE tmp/${NAME}_zip/${NAME}_${GIT_COUNT}.love
-cp dev/build_data/aur/README tmp/${NAME}_zip/README
-cd tmp/${NAME}_zip/
-zip -r ../${NAME}/${NAME}_${GIT_COUNT}.love.zip *
-cd ../..
-
-# create aur
-ZIP_SHA=`sha1sum tmp/${NAME}/${NAME}_${GIT_COUNT}.love.zip | awk '{ print $1 }'`
-sed -i "s/%%ZIP_SHA%%/${ZIP_SHA}/" tmp/${NAME}/PKGBUILD
-cd tmp/
-tar czvf ../builds/${NAME}_aur_${INFO}.tar.gz ${NAME}
-cd ..
-
-rm tmp/* -rf #tmp cleanup
-
-# DEBIAN/UBUNTU
-
-# Cleanup
-rm tmp -rf
