@@ -95,6 +95,9 @@ function cutscene:addThing(val)
   assert(type(val)=="table","Error: collection `self._things` can only add `table`")
   self._addtime = self._addtime + val.time
   val.time = self._addtime
+  if val.lifespan then
+    val.lifespan = val.lifespan + val.time
+  end
   table.insert(self._things,val)
 end
 

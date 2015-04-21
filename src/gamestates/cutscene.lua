@@ -11,6 +11,9 @@ function cutscene:draw()
 end
 
 function cutscene:update(dt)
+  if love.keyboard.isDown("tab") then
+    dt = dt * 8
+  end
   if self.data then
     self.data:update(dt)
     hump.timer.update(dt)

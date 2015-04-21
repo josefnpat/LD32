@@ -3,7 +3,6 @@
 # Love doesn't like symlinks! Oh noes!
 SRC="src"
 LOVE="love"
-#LOVE="env DISPLAY=:0.0 love"
 
 sh ./gengit.sh $SRC
 

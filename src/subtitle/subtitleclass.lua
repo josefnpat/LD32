@@ -11,7 +11,7 @@ function subtitle:draw(text)
   love.graphics.setColor(0,0,0,127)
   love.graphics.rectangle("fill",x,y-padding,w,h+padding*2)
   love.graphics.setColor(255,255,255)
-  love.graphics.printf(text,x+padding,y,w,"center")
+  love.graphics.printf(text,x+padding,y,w-padding*2,"center")
   love.graphics.setColor(oldcolor)
 end
 

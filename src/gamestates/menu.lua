@@ -4,7 +4,14 @@ function menu:init()
   self.bg = love.graphics.newImage("assets/menu.png")
   self.music = love.audio.newSource("assets/menu.ogg","stream")
   self.music:setLooping(true)
+end
+
+function menu:enter()
   self.music:play()
+end
+
+function menu:leave()
+  self.music:stop()
 end
 
 function menu:draw()

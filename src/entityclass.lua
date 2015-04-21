@@ -228,9 +228,13 @@ function entity:update(dt)
   self:setWalking( v.x ~= 0 or v.y ~= 0 )
 
   local x,y,w,h = self:getWorld():getRect(self)
-  -- clamp player
-  local tx = math.max(0,math.min(love.graphics.getWidth() - w,x+v.x*self:getSpeed()*dt))
-  local ty = math.max(350,math.min(650,y+v.y*self:getSpeed()/2*dt))
+  local tx = x+v.x*self:getSpeed()*dt
+  local ty = y+v.y*self:getSpeed()/2*dt
+  if self:getEClass() == "dino" then
+    -- clamp player
+    tx = math.max(0,math.min(love.graphics.getWidth() - w,tx))
+    ty = math.max(350,math.min(650,ty))
+  end
 
   local actualX, actualY, cols, len = self:getWorld():move(self,tx,ty,function(item,other)
     if item:getJumping() or other:getJumping() or
@@ -250,7 +254,7 @@ function entity:update(dt)
     local tx = x + math.cos(angle)*dt*100
     local ty = y + math.sin(angle)*dt*100
     -- clamp bread
-    local ctx = math.max(-300,math.min(love.graphics.getWidth() - w+300,tx))
+    local ctx = math.max(-2000,math.min(love.graphics.getWidth()+2000,tx))
     local cty = math.max(350,math.min(650,ty))
     self:getWorld():move(self,ctx,cty,function() end)
     if v.other == gamestates.game.player then
@@ -348,6 +352,9 @@ function entity.new(init)
   self._hat=init.hat or (math.random(0,1) == 1 and entity.hats.random[#entity.hats.random] or nil)
   self.getHat=entity.getHat
   self.setHat=entity.setHat
+  self._delay=init.delay
+  self.getDelay=entity.getDelay
+  self.setDelay=entity.setDelay
   return self
 end
 
@@ -477,6 +484,14 @@ end
 
 function entity:setHat(val)
   self._hat=val
+end
+
+function entity:getDelay()
+  return self._delay
+end
+
+function entity:setDelay(val)
+  self._delay=val
 end
 
 return entity

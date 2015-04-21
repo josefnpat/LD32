@@ -22,6 +22,9 @@ function game:init()
     end
   end
 
+  self.music = love.audio.newSource("assets/game.ogg")
+  self.music:setLooping(true)
+
 end
 
 function game:enter()
@@ -53,6 +56,12 @@ function game:enter()
 
   self.player = p
 
+  self.music:play()
+
+end
+
+function game:leave()
+  self.music:pause()
 end
 
 function game:getAttackArea()
@@ -144,6 +153,9 @@ function game:update(dt)
 
   for _,e in pairs(self.entities) do
     e:update(dt)
+    if love.keyboard.isDown("1") and e:getEClass() == "bread" then
+      e:setHealth(0)
+    end
   end
 
 end
@@ -171,6 +183,10 @@ function game.player_ai(self)
 end
 
 function game.bread_ai(self,dt)
+  if self:getDelay() > 0 then
+    self:setDelay( self:getDelay() - dt )
+    return {x=0,y=0}
+  end
   local x,y,w,h = self:getWorld():getRect(self)
   local px,py,pw,ph = self:getWorld():getRect(gamestates.game.player)
   local dy = py - y
@@ -185,6 +201,18 @@ end
 
 function game.dumb_bread_ai(self,dt)
   return {x=0,y=0},nil,nil
+end
+
+function game.king_bread_ai(self,dt)
+  local x,y,w,h = self:getWorld():getRect(self)
+  if x > love.graphics.getWidth() then
+    self:setHealth(0)
+  end
+  if self:getHealth() < 100 then
+    return {x=1,y=0},nil,nil
+  else
+    return {x=0,y=0},nil,nil
+  end
 end
 
 
