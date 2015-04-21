@@ -75,7 +75,7 @@ level.cutscene:addThing({
   })
 })
 
-dino_bro = cutscenethingclass.new({
+local dino_bro = cutscenethingclass.new({
   image = love.graphics.newImage("cutscene/stand.png"),
   x = love.graphics.getWidth(),
   y = 100,
@@ -211,7 +211,7 @@ level.cutscene:addThing({
   })
 })
 
-king = cutscenethingclass.new({
+local king = cutscenethingclass.new({
   time = 2,
   image = love.graphics.newImage("cutscene/king_sad.png"),
   x = love.graphics.getWidth(),

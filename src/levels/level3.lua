@@ -35,7 +35,7 @@ level.cutscene:addThing({
   })
 })
 
-dino = cutscenethingclass.new({
+local dino = cutscenethingclass.new({
   time = 1,
   image = love.graphics.newImage("cutscene/stand.png"),
   x = love.graphics.getWidth(),
