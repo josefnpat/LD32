@@ -10,6 +10,7 @@ end
 
 function failure:update(dt)
   if bindings.getTrigger(bindings.select) then
+    gamestates.levelselect.cur=0
     hump.gamestate.switch(gamestates.menu)
   end
 end

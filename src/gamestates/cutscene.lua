@@ -1,7 +1,7 @@
 local cutscene = {}
 
 function cutscene:enter()
-  self.data = currentlevel.cutscene
+  self.data = currentlevel.cutscene()
 end
 
 function cutscene:draw()
@@ -11,7 +11,7 @@ function cutscene:draw()
 end
 
 function cutscene:update(dt)
-  if love.keyboard.isDown("tab") then
+  if global_debug and love.keyboard.isDown("tab") then
     dt = dt * 8
   end
   if self.data then

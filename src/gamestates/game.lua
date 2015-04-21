@@ -153,7 +153,7 @@ function game:update(dt)
 
   for _,e in pairs(self.entities) do
     e:update(dt)
-    if love.keyboard.isDown("1") and e:getEClass() == "bread" then
+    if global_debug and love.keyboard.isDown("1") and e:getEClass() == "bread" then
       e:setHealth(0)
     end
   end
@@ -205,7 +205,7 @@ end
 
 function game.king_bread_ai(self,dt)
   local x,y,w,h = self:getWorld():getRect(self)
-  if x > love.graphics.getWidth() then
+  if x > love.graphics.getWidth()+200 then
     self:setHealth(0)
   end
   if self:getHealth() < 100 then

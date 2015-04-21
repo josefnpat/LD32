@@ -14,12 +14,14 @@ function levelselect:enter()
     self.cur = 0
   end
   self.cur = self.cur + 1
-  if self.cur > #self.levels then
-    self.cur = 1
-  end
   currentlevel = self.levels[self.cur]
+  if self.cur > #self.levels then
+    self.cur = 0
+    hump.gamestate.switch(gamestates.menu)
+  else
+    hump.gamestate.switch(gamestates.cutscene)
+  end
 
-  hump.gamestate.switch(gamestates.cutscene)
 end
 
 return levelselect
