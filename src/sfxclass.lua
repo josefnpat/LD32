@@ -5,10 +5,14 @@ sfxclass.data = {
     love.audio.newSource("assets/sfx/attack.wav","static"),
   },
   bread_hurt = {
-    love.audio.newSource("assets/sfx/bread_hurt.wav","static"),
+    love.audio.newSource("assets/sfx/bread_hurt1.wav","static"),
+    love.audio.newSource("assets/sfx/bread_hurt2.wav","static"),
+    love.audio.newSource("assets/sfx/bread_hurt3.wav","static"),
   },
   dino_hurt = {
-    love.audio.newSource("assets/sfx/dino_hurt.wav","static"),
+    love.audio.newSource("assets/sfx/dino_hurt1.wav","static"),
+    love.audio.newSource("assets/sfx/dino_hurt2.wav","static"),
+    love.audio.newSource("assets/sfx/dino_hurt3.wav","static"),
   },
   failure = {
     love.audio.newSource("assets/sfx/failure.wav","static"),
