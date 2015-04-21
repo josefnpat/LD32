@@ -19,6 +19,11 @@ function splash:enter()
   mss:setDuration( mss_sound:getDuration() )
   table.insert(self._splashes,mss)
 
+  local thejotne = splashclass.new()
+  thejotne:setImage(love.graphics.newImage("assets/splash/thejotne.png"))
+  thejotne:setDuration( 10 )
+  table.insert(self._splashes,thejotne)
+
   self._current = 1
 
 end
